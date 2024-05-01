@@ -1,33 +1,30 @@
-import sys
 from collections import deque
-
-
-sys.setrecursionlimit(10**6)
+import sys
 input = sys.stdin.readline
 
+N = int(input())
 
-def bfs():
+graph = [[] for _ in range(N+1)]
+for _ in range(1, N):
+    a, b = map(int, input().split())
+    graph[a].append(b)
+    graph[b].append(a)
+
+visited = [False] * (N+1)
+res = [0] * (N+1)
+
+def bfs(start):
+    queue = deque([start])
+    visited[start] = True
     while queue:
-        curr = queue.popleft()
-        for child in graph[curr]:
-            if parents[child] == 0:
-                parents[child] = curr
-                queue.append(child)
+        v = queue.popleft() 
+        for i in graph[v]:
+            if not visited[i]:
+                res[i] = v
+                queue.append(i)
+                visited[i] = True
 
+bfs(1)
 
-def init_graph(N):
-    graph = {n + 1: [] for n in range(N)}
-    for _ in range(N - 1):
-        u, v = map(int, input().split())
-        graph[u].append(v)
-        graph[v].append(u)
-    return graph
-
-
-if __name__ == "__main__":
-    N = int(input())
-    graph = init_graph(N)
-    queue = deque([1])
-    parents = [0] * (N + 1)
-    bfs()
-    print("\n".join(map(str, parents[2:])))
+for i in range(2, N+1):
+    print(res[i])
